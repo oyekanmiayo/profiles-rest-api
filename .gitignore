@@ -139,3 +139,6 @@ dmypy.json
 # End of https://www.gitignore.io/api/python,vagrant
 eb-package.zip
 static/
+
+# Intelli-J Files
+.idea/
