@@ -20,3 +20,10 @@ To create or update migrations:
 
 To apply migrations to the database:
 - `python manage.py migrate`
+
+To deploy on AWS:
+- `Sign up to AWS Free tier: https://aws.amazon.com/free/`
+- `Add Key Pair to AWS EC2 Service`
+- `Create EC2 Server Instance`
+- `Configure deployment files: setup.sh, supervisor, update.sh & nginx config`
+- `Use chmod +x *.sh to make the deployment files executable`
