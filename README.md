@@ -27,4 +27,12 @@ To deploy on AWS:
 - `Create EC2 Server Instance`
 - `Configure deployment files: setup.sh, supervisor, update.sh & nginx config`
 - `Use chmod +x *.sh to make the deployment files executable`
+- `ssh ubuntu@<compute_url>`
 - `curl -sL <path_to_raw_setup.sh> | sudo bash -`
+
+To update deployment:
+- `cd /usr/local/apps/<app_name>`
+- `sudo sh ./deploy/update.sh`
+
+To create Django Superuser:
+- `python manage.py createsuperuser`
