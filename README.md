@@ -27,3 +27,4 @@ To deploy on AWS:
 - `Create EC2 Server Instance`
 - `Configure deployment files: setup.sh, supervisor, update.sh & nginx config`
 - `Use chmod +x *.sh to make the deployment files executable`
+- `curl -sL <path_to_raw_setup.sh> | sudo bash -`
