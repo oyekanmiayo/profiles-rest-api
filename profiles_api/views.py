@@ -2,7 +2,13 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import viewsets
-from profiles_api import serializers
+from rest_framework.authentication import TokenAuthentication
+from rest_framework import filters
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.settings import api_settings
+from rest_framework.permissions import IsAuthenticated
+
+from profiles_api import serializers, models, permissions
 
 ## Using APIViews
 class HelloApiView(APIView):
@@ -46,7 +52,6 @@ class HelloApiView(APIView):
     def delete(self, pk=None):
         """Delete an object"""
         return Response({'method': 'DELETE'})
-
 #Using ViewSets
 class HelloViewSet(viewsets.ViewSet):
     """Testing API Viewsets"""
@@ -92,3 +97,36 @@ class HelloViewSet(viewsets.ViewSet):
     def destroy(self, request, pk=None):
         """Handle removing an object"""
         return Response({'method': 'DELETE'})
+
+class UserProfileViewSet(viewsets.ModelViewSet):
+    """Handle creating and updating profiles"""
+
+    serializer_class = serializers.UserProfileSerializer
+    queryset = models.UserProfile.objects.all()
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (permissions.UpdateOwnProfile,)
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('name','email',)
+
+class UserLoginApiView(ObtainAuthToken):
+    """Handle creating user authentication tokens"""
+    # Renderer Classes added because ObtainAuthToken does not have it by default
+    # It is what makes the API browsable on Django
+    renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES
+
+class UserProfileFeedViewSet(viewsets.ModelViewSet):
+    """Handles creating, reading and updating profile feed items"""
+
+    authentication_classes = (TokenAuthentication,)
+    serializer_class = serializers.ProfileFeedItemSerializer
+    queryset = models.ProfileFeedItem.objects.all()
+    permission_classes = (
+        permissions.UpdateOwnStatus,
+        IsAuthenticated
+    )
+
+    # All viewsets have it by default, it gets called when there's a HTTP POST to this ViewSet
+    # I override the base call here because I want to set user_profile to the logged in user
+    def perform_create(self, serializer):
+        """Set user_profile to the logged in user"""
+        serializer.save(user_profile=self.request.user)
